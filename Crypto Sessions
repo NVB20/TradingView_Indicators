@@ -1,0 +1,251 @@
+//@version=5
+indicator("Global Sessions Map — by Niv Berlin", 
+     shorttitle="Crypto Sessions", 
+     overlay=true,
+     max_boxes_count=500,
+     max_labels_count=500)
+
+// ============================================================================
+// USER INPUTS - Session Visibility and Colors
+// ============================================================================
+
+// Tokyo Session (JPX)
+show_tokyo = input.bool(true, "Show Tokyo (JPX)", group="Sessions")
+tokyo_color = input.color(color.new(color.purple, 85), "Tokyo Color", group="Sessions")
+
+// Hong Kong Session (HKEX)
+show_hongkong = input.bool(true, "Show Hong Kong (HKEX)", group="Sessions")
+hongkong_color = input.color(color.new(color.orange, 85), "Hong Kong Color", group="Sessions")
+
+// London Session (LSE)
+show_london = input.bool(true, "Show London (LSE)", group="Sessions")
+london_color = input.color(color.new(color.blue, 85), "London Color", group="Sessions")
+
+// New York Session (NYSE)
+show_newyork = input.bool(true, "Show New York (NYSE)", group="Sessions")
+newyork_color = input.color(color.new(color.green, 85), "New York Color", group="Sessions")
+
+// Label styling
+label_color = input.color(color.new(color.gray, 30), "Label Text Color", group="Styling")
+label_size = input.string("small", "Label Size", options=["tiny", "small", "normal", "large"], group="Styling")
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Convert label size string to Pine Script size constant
+get_label_size(size_str) =>
+    switch size_str
+        "tiny" => size.tiny
+        "small" => size.small
+        "normal" => size.normal
+        "large" => size.large
+        => size.small
+
+// Check if current bar is within a session time range
+in_session(session_spec) =>
+    not na(time(timeframe.period, session_spec, "UTC"))
+
+// Create a session box spanning from top to bottom of visible chart
+draw_session_box(start_time, box_color, top_price, bottom_price) =>
+    box.new(start_time, top_price, start_time, bottom_price, 
+         bgcolor=box_color, 
+         border_color=color.new(box_color, 0),
+         border_width=1,
+         extend=extend.none,
+         xloc=xloc.bar_time)
+
+// Create a label below the session box
+draw_session_label(label_time, label_text, text_color, size, bottom_price) =>
+    label.new(label_time, bottom_price, 
+         text=label_text, 
+         style=label.style_label_up,
+         color=color.new(color.gray, 90),
+         textcolor=text_color,
+         size=size,
+         xloc=xloc.bar_time)
+
+// ============================================================================
+// SESSION DEFINITIONS (UTC Times)
+// ============================================================================
+
+// Tokyo (JPX): 00:00-06:25 (extended to 06:55 to include closing bar)
+tokyo_session = "0000-0625:1234567"
+
+// Hong Kong (HKEX): 01:30-08:00 (extended to 08:30 to include closing bar)
+hongkong_session = "0130-0800:1234567"
+
+// London (LSE): 08:00-16:30 (extended to 17:00 to include closing bar)
+london_session = "0800-1630:1234567"
+
+// New York (NYSE): 14:30-21:00 (extended to 21:30 to include closing bar)
+newyork_session = "1430-2100:1234567"
+
+// ============================================================================
+// SESSION TRACKING VARIABLES
+// ============================================================================
+
+// Track if we're at the start of a new session
+var bool tokyo_active = false
+var bool hongkong_active = false
+var bool london_active = false
+var bool newyork_active = false
+
+// Track previous bar session state to detect end
+var bool tokyo_was_active = false
+var bool hongkong_was_active = false
+var bool london_was_active = false
+var bool newyork_was_active = false
+
+// Store current session boxes
+var box tokyo_box = na
+var box hongkong_box = na
+var box london_box = na
+var box newyork_box = na
+
+// Store session start times
+var int tokyo_start = na
+var int hongkong_start = na
+var int london_start = na
+var int newyork_start = na
+
+// Track highest and lowest prices during session
+var float tokyo_high = na
+var float tokyo_low = na
+var float hongkong_high = na
+var float hongkong_low = na
+var float london_high = na
+var float london_low = na
+var float newyork_high = na
+var float newyork_low = na
+
+// Get label size
+lbl_size = get_label_size(label_size)
+
+// ============================================================================
+// TOKYO SESSION - 00:00-06:25 UTC
+// ============================================================================
+
+if show_tokyo
+    in_tokyo = in_session(tokyo_session)
+    
+    // Session start - create new box and initialize tracking
+    if in_tokyo and not tokyo_active
+        tokyo_active := true
+        tokyo_start := time
+        tokyo_high := high
+        tokyo_low := low
+        tokyo_box := draw_session_box(time, tokyo_color, high, low)
+    
+    // Session active - extend box and update high/low
+    if in_tokyo and tokyo_active
+        tokyo_high := math.max(tokyo_high, high)
+        tokyo_low := math.min(tokyo_low, low)
+        box.set_right(tokyo_box, time)
+        box.set_top(tokyo_box, tokyo_high)
+        box.set_bottom(tokyo_box, tokyo_low)
+        tokyo_was_active := true
+    
+    // Session end - create label and reset flags
+    if not in_tokyo and tokyo_was_active
+        label_time = tokyo_start + (time[1] - tokyo_start) / 2
+        draw_session_label(label_time, "Tokyo (JPX)", label_color, lbl_size, tokyo_low)
+        tokyo_active := false
+        tokyo_was_active := false
+
+// ============================================================================
+// HONG KONG SESSION - 01:30-08:00 UTC
+// ============================================================================
+
+if show_hongkong
+    in_hongkong = in_session(hongkong_session)
+    
+    // Session start - create new box and initialize tracking
+    if in_hongkong and not hongkong_active
+        hongkong_active := true
+        hongkong_start := time
+        hongkong_high := high
+        hongkong_low := low
+        hongkong_box := draw_session_box(time, hongkong_color, high, low)
+    
+    // Session active - extend box and update high/low
+    if in_hongkong and hongkong_active
+        hongkong_high := math.max(hongkong_high, high)
+        hongkong_low := math.min(hongkong_low, low)
+        box.set_right(hongkong_box, time)
+        box.set_top(hongkong_box, hongkong_high)
+        box.set_bottom(hongkong_box, hongkong_low)
+        hongkong_was_active := true
+    
+    // Session end - create label and reset flags
+    if not in_hongkong and hongkong_was_active
+        label_time = hongkong_start + (time[1] - hongkong_start) / 2
+        draw_session_label(label_time, "Hong Kong (HKEX)", label_color, lbl_size, hongkong_low)
+        hongkong_active := false
+        hongkong_was_active := false
+
+// ============================================================================
+// LONDON SESSION - 08:00-16:30 UTC
+// ============================================================================
+
+if show_london
+    in_london = in_session(london_session)
+    
+    // Session start - create new box and initialize tracking
+    if in_london and not london_active
+        london_active := true
+        london_start := time
+        london_high := high
+        london_low := low
+        london_box := draw_session_box(time, london_color, high, low)
+    
+    // Session active - extend box and update high/low
+    if in_london and london_active
+        london_high := math.max(london_high, high)
+        london_low := math.min(london_low, low)
+        box.set_right(london_box, time)
+        box.set_top(london_box, london_high)
+        box.set_bottom(london_box, london_low)
+        london_was_active := true
+    
+    // Session end - create label and reset flags
+    if not in_london and london_was_active
+        label_time = london_start + (time[1] - london_start) / 2
+        draw_session_label(label_time, "London (LSE)", label_color, lbl_size, london_low)
+        london_active := false
+        london_was_active := false
+
+// ============================================================================
+// NEW YORK SESSION - 14:30-21:00 UTC
+// ============================================================================
+
+if show_newyork
+    in_newyork = in_session(newyork_session)
+    
+    // Session start - create new box and initialize tracking
+    if in_newyork and not newyork_active
+        newyork_active := true
+        newyork_start := time
+        newyork_high := high
+        newyork_low := low
+        newyork_box := draw_session_box(time, newyork_color, high, low)
+    
+    // Session active - extend box and update high/low
+    if in_newyork and newyork_active
+        newyork_high := math.max(newyork_high, high)
+        newyork_low := math.min(newyork_low, low)
+        box.set_right(newyork_box, time)
+        box.set_top(newyork_box, newyork_high)
+        box.set_bottom(newyork_box, newyork_low)
+        newyork_was_active := true
+    
+    // Session end - create label and reset flags
+    if not in_newyork and newyork_was_active
+        label_time = newyork_start + (time[1] - newyork_start) / 2
+        draw_session_label(label_time, "New York (NYSE)", label_color, lbl_size, newyork_low)
+        newyork_active := false
+        newyork_was_active := false
+
+// ============================================================================
+// END OF INDICATOR
+// ============================================================================
