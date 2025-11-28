@@ -24,6 +24,8 @@ _spdr = switch _sector
     "Non-Energy Minerals"            => "XLB"
     "Real Estate"                    => "XLRE"
     "Utilities"                      => "XLU"
+    "Transportation"                 => "XLE"
+    "Distribution Services"          => "XLV"
     => "UNKNOWN"
 
 // Create the table at bottom-right
