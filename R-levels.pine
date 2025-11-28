@@ -1,0 +1,88 @@
+//@version=6
+indicator("R-Levels", overlay=true, max_labels_count=12)
+
+// Inputs
+targetBarIndex = input.int(0, "Select Bar Index", minval=0)
+showPrices = input.bool(true, "Show Prices on Labels")
+showBarIndexLabel = input.bool(true, "Show Bar Index Label")
+show3R = input.bool(true, "Show 3R Level")
+show6R = input.bool(true, "Show 6R Level")
+useCustomLevels = input.bool(false, "Use Custom High/Low")
+customHigh = input.float(0.0, "Custom High", step=0.01)
+customLow = input.float(0.0, "Custom Low", step=0.01)
+isShort = input.bool(false, "Reverse Trade (Short)")
+
+// Show bar index labels for last 12 bars
+if showBarIndexLabel and barstate.islast
+    for i = 0 to 11
+        label.new(bar_index - i, high[i], text=str.tostring(bar_index - i),
+                  style=label.style_label_down, size=size.small)
+
+// Level storage
+var float savedHigh = na
+var float savedLow = na
+var float entry = na
+var float stop = na
+var float r3 = na
+var float r6 = na
+var int targetBarTime = na
+
+// Draw-once references
+var line entryLine = na
+var line stopLine = na
+var line r3Line = na
+var line r6Line = na
+var label entryLabel = na
+var label stopLabel = na
+var label r3Label = na
+var label r6Label = na
+
+// Save high/low and time at target bar
+if na(savedHigh) and bar_index == targetBarIndex and targetBarIndex > 0
+    savedHigh := useCustomLevels and customHigh != 0.0 ? customHigh : high
+    savedLow := useCustomLevels and customLow != 0.0 ? customLow : low
+    targetBarTime := time
+
+// Calculate R levels once
+if not na(savedHigh) and not na(savedLow) and na(entry)
+    float risk = na
+    if not isShort
+        entry := savedHigh + 0.01
+        stop := savedLow - 0.01
+        risk := entry - stop
+        r3 := entry + risk * 3
+        r6 := entry + risk * 6
+    else
+        entry := savedLow - 0.01
+        stop := savedHigh + 0.01
+        risk := stop - entry
+        r3 := entry - risk * 3
+        r6 := entry - risk * 6
+
+// Draw everything once
+if not na(entry) and not na(targetBarTime) and na(entryLine)
+    offset = time - time[1]
+
+    // Entry
+    entryLine := line.new(x1=targetBarTime, y1=entry, x2=targetBarTime + 5 * offset, y2=entry, color=color.green, width=2, xloc=xloc.bar_time)
+    entryLabel := label.new(x=targetBarTime + 5 * offset, y=entry, text=showPrices ? "Entry: " + str.tostring(entry, format.mintick) : "Entry", style=label.style_label_left, color=color.green, textcolor=color.white, xloc=xloc.bar_time)
+
+    // Stop
+    stopLine := line.new(x1=targetBarTime, y1=stop, x2=targetBarTime + 5 * offset, y2=stop, color=color.red, width=2, xloc=xloc.bar_time)
+    stopLabel := label.new(x=targetBarTime + 5 * offset, y=stop, text=showPrices ? "Stop: " + str.tostring(stop, format.mintick) : "Stop", style=label.style_label_left, color=color.red, textcolor=color.white, xloc=xloc.bar_time)
+
+     // 3R
+    if show3R
+        line.new(x1=targetBarTime, y1=r3, x2=targetBarTime + 20 * offset, y2=r3, color=color.blue, width=2, xloc=xloc.bar_time)
+        label.new(x=targetBarTime, y=r3, text=showPrices ? "3R\n" + str.tostring(r3, format.mintick) : "3R", style=label.style_label_right, color=color.blue, textcolor=color.white, xloc=xloc.bar_time)
+
+    // 6R 
+    if show6R
+        line.new(x1=targetBarTime, y1=r6, x2=targetBarTime + 20 * offset, y2=r6, color=color.purple, width=2, xloc=xloc.bar_time)
+        label.new(x=targetBarTime, y=r6, text=showPrices ? "6R\n" + str.tostring(r6, format.mintick) : "6R", style=label.style_label_right, color=color.purple, textcolor=color.white, xloc=xloc.bar_time)
+
+    // Optional custom high/low
+    if useCustomLevels and customHigh != 0.0
+        line.new(x1=targetBarTime, y1=customHigh, x2=targetBarTime + 5 * offset, y2=customHigh, color=color.gray, style=line.style_dashed, xloc=xloc.bar_time)
+    if useCustomLevels and customLow != 0.0
+        line.new(x1=targetBarTime, y1=customLow, x2=targetBarTime + 5 * offset, y2=customLow, color=color.gray, style=line.style_dashed, xloc=xloc.bar_time)
