@@ -1,0 +1,33 @@
+//@version=5
+indicator("XLTag", overlay=true)
+
+// TradingView sector classification
+_sector = syminfo.sector
+
+// Map TradingView sectors to SPDR ETF codes
+_spdr = switch _sector
+    "Electronic Technology"          => "XLK"
+    "Technology Services"            => "XLK"
+    "Health Technology"              => "XLV"
+    "Health Services"                => "XLV"
+    "Commercial Services"            => "XLC"
+    "Communications"                 => "XLC"
+    "Consumer Services"              => "XLY"
+    "Consumer Non-Durables"          => "XLP"
+    "Consumer Durables"              => "XLY"
+    "Retail Trade"                   => "XLY"
+    "Finance"                        => "XLF"
+    "Energy Minerals"                => "XLE"
+    "Industrial Services"            => "XLI"
+    "Producer Manufacturing"         => "XLI"
+    "Process Industries"             => "XLB"
+    "Non-Energy Minerals"            => "XLB"
+    "Real Estate"                    => "XLRE"
+    "Utilities"                      => "XLU"
+    => "UNKNOWN"
+
+// Create the table at bottom-right
+var table corner = table.new(position.bottom_right, 1, 1, border_width = 1)
+
+if barstate.islast
+    table.cell(corner, 0, 0, _spdr, text_color = color.white, text_size = size.large)
