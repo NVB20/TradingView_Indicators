@@ -14,7 +14,7 @@ Displays the key global trading sessions directly on your chart:
 
 Makes it easy to track **market timing, volume behavior, and volatility patterns**.
 
-## 🔹 XLTag
+## 🔹 XL-Tag
 Shows the **sector ETF code** for any stock (e.g., XLK, XLF, XLE, etc.) using TradingView’s sector data.  
 Gives quick context about a symbol’s **economic sector** without leaving the chart.
 
