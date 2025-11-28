@@ -1,5 +1,5 @@
 //@version=5
-indicator("XLTag", overlay=true)
+indicator("XL-Tag", overlay=true)
 
 // TradingView sector classification
 _sector = syminfo.sector
