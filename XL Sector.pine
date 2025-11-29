@@ -1,5 +1,5 @@
 //@version=5
-indicator("XL-Tag", overlay=true)
+indicator("XL Sector", overlay=true)
 
 //  Manual GICS Overrides (Ticker → SPDR Sector)
 gicsOverride = switch syminfo.ticker
@@ -11,6 +11,8 @@ gicsOverride = switch syminfo.ticker
     "AGRO" => "XLP"
     "AMR"  => "XLB"
     "AMTX" => "XLE"
+    "APOG" => "XLY"
+    "ARCE" => "XLP"
     => ""
 
 
@@ -24,6 +26,9 @@ _spdr_industry = switch _industry
     "Electronics/Appliances"            => "XLK"
     "Software"                          => "XLK"
     "Information Technology Services"   => "XLK"
+    "Computer Peripherals"              => "XLK"
+    "Electronic Components"             => "XLK"
+    "Electronics Distributors"          => "XLK"
     "Packaged Software"                 => "XLK"
     "Data Processing Services"          => "XLK"
 
@@ -42,16 +47,19 @@ _spdr_industry = switch _industry
     "Healthcare Services"               => "XLV"
     "Managed Health Care"               => "XLV"
     "Pharmaceuticals: Major"            => "XLV"
+    "Engineering & Construction"        => "XLV"
     "Pharmaceuticals: Generic"          => "XLV"
-    "Personnel Services"                 => "XLV"
+    "Personnel Services"                => "XLV"
     "Agricultural Commodities/Milling"  => "XLV"
     "Medical/Nursing Services"          => "XLV"
 
     "Retail"                            => "XLY"
     "Specialty Stores"                  => "XLY"
     "Autos"                             => "XLY"
+    "Recreational Products"             => "XLY"
     "Building Products"                 => "XLY"
     "Auto Parts: OEM"                   => "XLY"
+    "Apparel/Footwear Retail"           => "XLY"
     "Consumer Durables"                 => "XLY"
     "Internet Retail"                   => "XLY"
     "Containers/Packaging"              => "XLY"
@@ -59,6 +67,9 @@ _spdr_industry = switch _industry
 
     "Food Products"                     => "XLP"
     "Beverages"                         => "XLP"
+    "Food Retail"                       => "XLP"
+    "Miscellaneous Commercial Services" => "XLP"
+    "Other Consumer Services"           => "XLP"
     "Household/Personal Care"           => "XLP"
 
     "Banks"                             => "XLF"
@@ -77,6 +88,7 @@ _spdr_industry = switch _industry
     "Oil & Gas"                         => "XLE"
     "Oilfield Services"                 => "XLE"
     "Oil & Gas Pipelines"               => "XLE"
+    "Integrated Oil"                    => "XLE"
     "Coal"                              => "XLE"
 
     "Aerospace & Defense"               => "XLI"
@@ -96,6 +108,7 @@ _spdr_industry = switch _industry
     "Chemicals"                         => "XLB"
     "Metals & Mining"                   => "XLB"
     "Chemicals: Specialty"              => "XLB"
+    "Food: Specialty/Candy"             => "XLB"
     "Paper & Forest Products"           => "XLB"
     "Aluminum"                          => "XLB"
 
@@ -103,6 +116,7 @@ _spdr_industry = switch _industry
     "Real Estate Investment Trusts"     => "XLRE"
 
     "Utilities"                         => "XLU"
+    "Electric Utilities"                => "XLU"
     "Alternative Power Generation"      => "XLU"
 
     "Precious Metals"                   => "XLB"
