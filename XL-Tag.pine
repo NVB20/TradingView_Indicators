@@ -1,35 +1,123 @@
 //@version=5
 indicator("XL-Tag", overlay=true)
 
-// TradingView sector classification
-_sector = syminfo.sector
+//  Manual GICS Overrides (Ticker → SPDR Sector)
+gicsOverride = switch syminfo.ticker
+    "AAPL" => "XLK"   
+    "RPRX" => "XLV"  
+    "TSLA" => "XLY"
+    "VRSN" => "XLK"
+    "AFRM" => "XLK"
+    "AGRO" => "XLP"
+    "AMR"  => "XLB"
+    "AMTX" => "XLE"
+    => ""
 
-// Map TradingView sectors to SPDR ETF codes
-_spdr = switch _sector
-    "Electronic Technology"          => "XLK"
-    "Technology Services"            => "XLK"
-    "Health Technology"              => "XLV"
-    "Health Services"                => "XLV"
-    "Commercial Services"            => "XLC"
-    "Communications"                 => "XLC"
-    "Consumer Services"              => "XLY"
-    "Consumer Non-Durables"          => "XLP"
-    "Consumer Durables"              => "XLY"
-    "Retail Trade"                   => "XLY"
-    "Finance"                        => "XLF"
-    "Energy Minerals"                => "XLE"
-    "Industrial Services"            => "XLI"
-    "Producer Manufacturing"         => "XLI"
-    "Process Industries"             => "XLB"
-    "Non-Energy Minerals"            => "XLB"
-    "Real Estate"                    => "XLRE"
-    "Utilities"                      => "XLU"
-    "Transportation"                 => "XLE"
-    "Distribution Services"          => "XLV"
+
+// Industry → SPDR Sector Mapping
+
+_industry = syminfo.industry
+
+_spdr_industry = switch _industry
+    "Semiconductors"                    => "XLK"
+    "Computer Communications"           => "XLK"
+    "Electronics/Appliances"            => "XLK"
+    "Software"                          => "XLK"
+    "Information Technology Services"   => "XLK"
+    "Packaged Software"                 => "XLK"
+    "Data Processing Services"          => "XLK"
+
+    "Telecommunications"                => "XLC"
+    "Telecommunications Equipment"      => "XLC"
+    "Cable/Satellite TV"                => "XLC"
+    "Media"                             => "XLC"
+    "Movies/Entertainment"              => "XLC"
+    "Interactive Media"                 => "XLC"
+    "Internet Software/Services"        => "XLC"
+    "Hotels/Resorts/Cruise lines"       => "XLC"
+
+    "Biotechnology"                     => "XLV"
+    "Pharmaceuticals"                   => "XLV"
+    "Medical Specialties"               => "XLV"
+    "Healthcare Services"               => "XLV"
+    "Managed Health Care"               => "XLV"
+    "Pharmaceuticals: Major"            => "XLV"
+    "Pharmaceuticals: Generic"          => "XLV"
+    "Personnel Services"                 => "XLV"
+    "Agricultural Commodities/Milling"  => "XLV"
+    "Medical/Nursing Services"          => "XLV"
+
+    "Retail"                            => "XLY"
+    "Specialty Stores"                  => "XLY"
+    "Autos"                             => "XLY"
+    "Building Products"                 => "XLY"
+    "Auto Parts: OEM"                   => "XLY"
+    "Consumer Durables"                 => "XLY"
+    "Internet Retail"                   => "XLY"
+    "Containers/Packaging"              => "XLY"
+    "Hotels/Entertainment"              => "XLY"
+
+    "Food Products"                     => "XLP"
+    "Beverages"                         => "XLP"
+    "Household/Personal Care"           => "XLP"
+
+    "Banks"                             => "XLF"
+    "Insurance"                         => "XLF"
+    "Financial Conglomerates"           => "XLF"
+    "Investment Banks/Brokers"          => "XLF"
+    "Multi-Line Insurance"              => "XLF"
+    "Investment Management"             => "XLF"
+    "Major Banks"                       => "XLF"
+    "Investment Managers"               => "XLF"
+    "Specialty Insurance"               => "XLF"
+    "Property/Casualty Insurance"       => "XLF"
+    "Insurance Brokers/Services"        => "XLF"
+
+
+    "Oil & Gas"                         => "XLE"
+    "Oilfield Services"                 => "XLE"
+    "Oil & Gas Pipelines"               => "XLE"
+    "Coal"                              => "XLE"
+
+    "Aerospace & Defense"               => "XLI"
+    "Industrial Machinery"              => "XLI"
+    "Electrical Products"               => "XLI"
+    "Construction"                      => "XLI"
+    "Finance/Rental/Leasing"            => "XLI"
+    "Tools & Hardware"                  => "XLI"
+    "Transportation"                    => "XLI"
+    "Trucking"                          => "XLI"
+    "Trucks/Construction/Farm Machinery" => "XLI"
+    "Airlines"                          => "XLI"
+    "Wholesale Distributors"            => "XLI"
+    "Marine Shipping"                   => "XLI"
+    "Motor Vehicles"                    => "XLI"
+
+    "Chemicals"                         => "XLB"
+    "Metals & Mining"                   => "XLB"
+    "Chemicals: Specialty"              => "XLB"
+    "Paper & Forest Products"           => "XLB"
+    "Aluminum"                          => "XLB"
+
+    "Real Estate Development"           => "XLRE"
+    "Real Estate Investment Trusts"     => "XLRE"
+
+    "Utilities"                         => "XLU"
+    "Alternative Power Generation"      => "XLU"
+
+    "Precious Metals"                   => "XLB"
+
+    "Investment Trusts/Mutual Funds"    => "Commodity"
     => "UNKNOWN"
 
-// Create the table at bottom-right
-var table corner = table.new(position.bottom_right, 1, 1, border_width = 1)
 
+
+// Final Sector (Override > Industry)
+
+_spdr = gicsOverride != "" ? gicsOverride : _spdr_industry
+
+//  Display
+
+var table corner = table.new(position.bottom_right, 1, 1, border_width = 1)
 if barstate.islast
-    table.cell(corner, 0, 0, _spdr, text_color = color.white, text_size = size.large)
+    table.cell(corner, 0, 0, _spdr, text_color=color.white, text_size=size.large)
