@@ -23,7 +23,6 @@ gicsOverride = switch syminfo.ticker
 
 
 // Industry → SPDR Sector Mapping
-
 _industry = syminfo.industry
 
 _spdr_industry = switch _industry
@@ -39,12 +38,14 @@ _spdr_industry = switch _industry
     "Data Processing Services"          => "XLK"
 
     "Telecommunications"                => "XLC"
+    "Specialty Telecommunications"      => "XLC"
     "Telecommunications Equipment"      => "XLC"
     "Cable/Satellite TV"                => "XLC"
     "Media"                             => "XLC"
     "Movies/Entertainment"              => "XLC"
     "Interactive Media"                 => "XLC"
     "Internet Software/Services"        => "XLC"
+    "Wireless Telecommunications"       => "XLC"
     "Hotels/Resorts/Cruise lines"       => "XLC"
 
     "Biotechnology"                     => "XLV"
@@ -52,10 +53,12 @@ _spdr_industry = switch _industry
     "Medical Specialties"               => "XLV"
     "Healthcare Services"               => "XLV"
     "Managed Health Care"               => "XLV"
+    "Hospital/Nursing Management"       => "XLV"
     "Pharmaceuticals: Major"            => "XLV"
     "Engineering & Construction"        => "XLV"
     "Pharmaceuticals: Generic"          => "XLV"
     "Pharmaceuticals: Other"            => "XLV"
+    "Medical Distributors"              => "XLV"
     "Personnel Services"                => "XLV"
     "Medical/Nursing Services"          => "XLV"
 
@@ -134,17 +137,15 @@ _spdr_industry = switch _industry
 
     "Precious Metals"                   => "XLB"
 
-    "Investment Trusts/Mutual Funds"    => "Commodity"
+    "Investment Trusts/Mutual Funds"    => "ETF"
     => "UNKNOWN"
 
 
 
 // Final Sector (Override > Industry)
-
 _spdr = gicsOverride != "" ? gicsOverride : _spdr_industry
 
 //  Display
-
 var table corner = table.new(position.bottom_right, 1, 1, border_width = 1)
 if barstate.islast
     table.cell(corner, 0, 0, _spdr, text_color=color.white, text_size=size.large)
