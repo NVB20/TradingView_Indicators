@@ -22,6 +22,6 @@ Gives quick context about a symbol’s **economic sector** without leaving the c
 
 ## 📌 Usage
 1. Open TradingView chart.
-2. Add the desired indicator (`R Levels`, `Crypto Sessions`, or `XLTag`) from Pine Editor.
+2. Add the desired indicator (`R Levels`, `Crypto Sessions`, or `XL Sector`) from Pine Editor.
 ---
 
