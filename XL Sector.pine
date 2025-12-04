@@ -68,6 +68,7 @@ _spdr_industry = switch _industry
     "Autos"                             => "XLY"
     "Recreational Products"             => "XLY"
     "Building Products"                 => "XLY"
+    "Apparel/Footwear"                  => "XLY"
     "Auto Parts: OEM"                   => "XLY"
     "Apparel/Footwear Retail"           => "XLY"
     "Department Stores"                  => "XLY"
@@ -99,6 +100,7 @@ _spdr_industry = switch _industry
 
 
     "Oil & Gas"                         => "XLE"
+    "Oil & Gas Production"              => "XLE"
     "Oilfield Services"                 => "XLE"
     "Oil & Gas Pipelines"               => "XLE"
     "Integrated Oil"                    => "XLE"
