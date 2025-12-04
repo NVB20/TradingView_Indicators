@@ -110,6 +110,7 @@ _spdr_industry = switch _industry
     "Industrial Machinery"              => "XLI"
     "Electrical Products"               => "XLI"
     "Pulp & Paper"                      => "XLI"
+    "Air Freight/Couriers"              => "XLI"    
     "Metal Fabrication"                 => "XLI"
     "Miscellaneous Manufacturing"       => "XLI"
     "Construction"                      => "XLI"
