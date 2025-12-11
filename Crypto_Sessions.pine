@@ -5,10 +5,8 @@ indicator("Global Sessions Map — by Niv Berlin",
      max_boxes_count=500,
      max_labels_count=500)
 
-// ============================================================================
-// USER INPUTS - Session Visibility and Colors
-// ============================================================================
 
+// USER INPUTS - Session Visibility and Colors
 // Tokyo Session (JPX)
 show_tokyo = input.bool(true, "Show Tokyo (JPX)", group="Sessions")
 tokyo_color = input.color(color.new(color.purple, 85), "Tokyo Color", group="Sessions")
@@ -29,10 +27,9 @@ newyork_color = input.color(color.new(color.green, 85), "New York Color", group=
 label_color = input.color(color.new(color.gray, 30), "Label Text Color", group="Styling")
 label_size = input.string("small", "Label Size", options=["tiny", "small", "normal", "large"], group="Styling")
 
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
 
+
+// HELPER FUNCTIONS
 // Convert label size string to Pine Script size constant
 get_label_size(size_str) =>
     switch size_str
@@ -65,26 +62,22 @@ draw_session_label(label_time, label_text, text_color, size, bottom_price) =>
          size=size,
          xloc=xloc.bar_time)
 
-// ============================================================================
-// SESSION DEFINITIONS (UTC Times)
-// ============================================================================
 
-// Tokyo (JPX): 00:00-06:25 (extended to 06:55 to include closing bar)
+// SESSION DEFINITIONS (UTC Times)
+// Tokyo (JPX)
 tokyo_session = "0000-0625:1234567"
 
-// Hong Kong (HKEX): 01:30-08:00 (extended to 08:30 to include closing bar)
+// Hong Kong (HKEX)
 hongkong_session = "0130-0800:1234567"
 
-// London (LSE): 08:00-16:30 (extended to 17:00 to include closing bar)
+// London (LSE)
 london_session = "0800-1630:1234567"
 
-// New York (NYSE): 14:30-21:00 (extended to 21:30 to include closing bar)
+// New York (NYSE)
 newyork_session = "1430-2100:1234567"
 
-// ============================================================================
-// SESSION TRACKING VARIABLES
-// ============================================================================
 
+// SESSION TRACKING VARIABLES
 // Track if we're at the start of a new session
 var bool tokyo_active = false
 var bool hongkong_active = false
@@ -122,10 +115,8 @@ var float newyork_low = na
 // Get label size
 lbl_size = get_label_size(label_size)
 
-// ============================================================================
-// TOKYO SESSION - 00:00-06:25 UTC
-// ============================================================================
 
+// TOKYO SESSION - 00:00-06:25 UTC
 if show_tokyo
     in_tokyo = in_session(tokyo_session)
     
@@ -153,10 +144,8 @@ if show_tokyo
         tokyo_active := false
         tokyo_was_active := false
 
-// ============================================================================
-// HONG KONG SESSION - 01:30-08:00 UTC
-// ============================================================================
 
+// HONG KONG SESSION - 01:30-08:00 UTC
 if show_hongkong
     in_hongkong = in_session(hongkong_session)
     
@@ -184,10 +173,8 @@ if show_hongkong
         hongkong_active := false
         hongkong_was_active := false
 
-// ============================================================================
-// LONDON SESSION - 08:00-16:30 UTC
-// ============================================================================
 
+// LONDON SESSION - 08:00-16:30 UTC
 if show_london
     in_london = in_session(london_session)
     
@@ -215,10 +202,8 @@ if show_london
         london_active := false
         london_was_active := false
 
-// ============================================================================
-// NEW YORK SESSION - 14:30-21:00 UTC
-// ============================================================================
 
+// NEW YORK SESSION - 14:30-21:00 UTC
 if show_newyork
     in_newyork = in_session(newyork_session)
     
@@ -245,7 +230,3 @@ if show_newyork
         draw_session_label(label_time, "New York (NYSE)", label_color, lbl_size, newyork_low)
         newyork_active := false
         newyork_was_active := false
-
-// ============================================================================
-// END OF INDICATOR
-// ============================================================================
