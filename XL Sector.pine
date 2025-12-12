@@ -51,6 +51,7 @@ _spdr_industry = switch _industry
     "Semiconductors"                    => "XLK"
     "Computer Communications"           => "XLK"
     "Electronics/Appliances"            => "XLK"
+    "Electronic Equipment/Instruments" => "XLK"
     "Software"                          => "XLK"
     "Information Technology Services"   => "XLK"
     "Other Transportation"              => "XLK"
