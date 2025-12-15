@@ -20,6 +20,13 @@ gicsOverride = switch syminfo.ticker
     "ATOM" => "XLP"
     "ARCE" => "XLP"
     "AGRO" => "XLP"
+    "PAYX" => "XLI"
+    "JOYY" => "XLC"
+    "VRSK" => "XLI"
+    "FDS"  => "XLF"
+    "J"    => "XLI"
+    "BITF" => "XLF" 
+    "TTGT" => "XLC"
     "TSLA" => "XLY"
     "AMTX" => "XLE"
 
