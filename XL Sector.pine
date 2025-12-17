@@ -29,6 +29,7 @@ gicsOverride = switch syminfo.ticker
     "TTGT" => "XLC"
     "TSLA" => "XLY"
     "AMTX" => "XLE"
+    "SHCO" => "XLY"
 
     "SPY" => "ETF"
     "QQQ" => "ETF"
