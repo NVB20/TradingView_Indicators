@@ -27,6 +27,7 @@ gicsOverride = switch syminfo.ticker
     "J"    => "XLI"
     "BITF" => "XLF" 
     "TTGT" => "XLC"
+    "SKYT" => "XLK"
     "TSLA" => "XLY"
     "AMTX" => "XLE"
     "SHCO" => "XLY"
